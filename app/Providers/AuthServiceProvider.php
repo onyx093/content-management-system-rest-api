@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\OauthPersonalAccessClient;
+use Exception;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
@@ -26,5 +29,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Passport::routes();
+        Passport::tokensExpireIn(now()->addDays(15));
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+
+        try {
+            Passport::personalAccessClient(OauthPersonalAccessClient::with('oauth_clients')->first());
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+        }
     }
 }
