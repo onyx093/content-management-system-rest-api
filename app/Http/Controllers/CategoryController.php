@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Requests\{StoreCategoryRequest, UpdateCategoryRequest};
+use App\Http\Resources\{CategoryCollection, CategoryResource};
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -15,7 +16,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        if(!Auth::hasUser()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $category = Category::paginate();
+
+        return new CategoryCollection($category);
     }
 
     /**
@@ -26,7 +33,15 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        //
+        if(!Auth::hasUser()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $category = new Category();
+        $category->name = $request->input('name');
+        $category->save();
+
+        return response()->json(new CategoryResource($category), 201);
     }
 
     /**
@@ -37,7 +52,11 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        if(!Auth::hasUser()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return response()->json(new CategoryResource($category));
     }
 
     /**
@@ -49,7 +68,14 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        if(!Auth::hasUser()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $category->name = $request->input('name');
+        $category->save();
+
+        return response()->json(new CategoryResource($category));
     }
 
     /**
@@ -60,6 +86,12 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        if(!Auth::hasUser()){
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $category->delete();
+
+        return response()->json(null, 204);
     }
 }

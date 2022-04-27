@@ -20,12 +20,12 @@ class DatabaseSeeder extends Seeder
         //     UserSeeder::class,
         // ]);
 
-        $categories = Category::factory(5)->create();
+        $users = User::factory(2)->create();
 
-        User::factory(2)->create()->each( function($user) use ($categories) {
+        Category::factory(20)->create()->each( function($category) use ($users) {
             Post::factory(rand(2, 5))->create([
-                'category_id' => $categories->random()->id,
-                'user_id' => $user->id,
+                'category_id' => $category->id,
+                'user_id' => $users->random()->id,
             ]);
         });
     }

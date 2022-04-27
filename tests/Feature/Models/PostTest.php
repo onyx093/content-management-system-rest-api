@@ -10,6 +10,7 @@ use Laravel\Passport\Passport;
 
 class PostTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test to check if an authenticated user can create a post.
      *
@@ -21,6 +22,6 @@ class PostTest extends TestCase
         Passport::actingAs($user);
         $response = $this->json('POST', '/api/v1/posts', []);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
     }
 }
