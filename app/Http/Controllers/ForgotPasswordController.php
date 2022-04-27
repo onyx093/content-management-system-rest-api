@@ -29,6 +29,15 @@ class ForgotPasswordController extends Controller
         // Generate a new token and save a new password reset entry
         $token = Str::random(10);
 
+        if($passwordReset = PasswordReset::where('email', $email)->first())
+        {
+            // Send an email
+            Mail::to($email)->send(new PasswordResetMail(["token" => $passwordReset->token]));
+            return response()->json(["message" => "Check your email address"]);
+        }
+
+        $token = Str::random(10);
+
         try {
             $new_password_reset = new PasswordReset();
             $new_password_reset->email = $email;

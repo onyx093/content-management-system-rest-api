@@ -30,6 +30,9 @@ class PasswordResetController extends Controller
         $user->password = Hash::make($request->input('password'));
         $user->save();
 
+        //Delete password reset entry
+        PasswordReset::where('token', $token)->delete();
+
         return response()->json(["message" => "Success"]);
     }
 }
