@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -41,14 +40,14 @@ class AuthControllerTest extends TestCase
     }
 
     /**
-     * A basic feature test for laravel passport authentication to login a user.
+     * A basic feature test for laravel passport authentication to login a user and get authenticated user.
      *
      * @return void
      */
-    public function test_can_login_user():void
+    public function test_can_login_user_and_get_authenticated_user():void
     {
         $user = User::factory()->create();
-        Passport::actingAs($user);
+
         $response = $this->json('POST', 'api/v1/login', [
             'email' => $user->email,
             'password' => 'password'
@@ -56,10 +55,16 @@ class AuthControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure(['user', 'token']);
+
+        Passport::actingAs($user);
+        $response = $this->json('GET', 'api/v1/user');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['user']);
     }
 
     /**
-     * A basic feature test for laravel passport authentication to login a user.
+     * A basic feature test for laravel passport authentication to logout a user.
      *
      * @return void
      */
@@ -67,10 +72,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create();
         Passport::actingAs($user);
-        $response = $this->json('POST', 'api/v1/logout', [
-            'email' => $user->email,
-            'password' => 'password'
-        ]);
+        $response = $this->json('POST', 'api/v1/logout');
 
         $response->assertStatus(200)
             ->assertJsonStructure([]);
