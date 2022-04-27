@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,8 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:api')->group( function () {
         Route::get('/user', [AuthController::class, 'getUser']);
+
+        Route::apiResource('/posts', PostController::class);
 
         Route::post('/logout', [AuthController::class, 'logout']);
     });
