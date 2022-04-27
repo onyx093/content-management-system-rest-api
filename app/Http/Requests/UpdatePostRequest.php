@@ -24,6 +24,7 @@ class UpdatePostRequest extends FormRequest
     public function rules()
     {
         return [
+            'category_id' => 'required|integer',
             'title' => 'required|string|min:5',
             'content' => 'required|string'
         ];

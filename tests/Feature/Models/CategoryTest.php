@@ -13,7 +13,7 @@ class CategoryTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     /**
-     * A basic feature test to check if an authenticated user can create a category.
+     * A basic feature test to check if an authenticated user can get a collection of paginated categories.
      *
      * @return void
      */
